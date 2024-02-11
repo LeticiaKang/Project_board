@@ -8,8 +8,13 @@ import java.util.Objects;
 @Getter
 @Setter
 @ToString(callSuper = true)
-@AllArgsConstructor //기본 생성자 자동 생성
+@Table(indexes = { //검색을 위한 index를 설정
+        @Index(columnList = "email", unique = true),
+        @Index(columnList = "createdAt"),
+        @Index(columnList = "createdBy")
+})
 @Entity
+@AllArgsConstructor //기본 생성자 자동 생성
 public class UserAccount extends AuditingFields {
     @Id
     @Column(length = 50)
@@ -27,6 +32,7 @@ public class UserAccount extends AuditingFields {
 
     private String memo;
 
+    // Hibernate구현체를 사용하는 경우 기본 생성자를 가지고 있어야 한다. 평소에는 오픈하지 않으거라 protected로 설정, private는 작동 안됨.
     protected UserAccount() {}
 
     @Override
