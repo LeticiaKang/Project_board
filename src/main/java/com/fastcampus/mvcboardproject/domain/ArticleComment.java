@@ -1,14 +1,30 @@
 package com.fastcampus.mvcboardproject.domain;
 
-import java.time.LocalDateTime;
+import jakarta.persistence.*;
+import lombok.*;
 
-public class ArticleComment {
+@Getter
+@Setter
+@ToString(callSuper = true)
+@AllArgsConstructor //기본 생성자 자동 생성
+@Entity
+public class ArticleComment extends AuditingFields {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter(AccessLevel.NONE)
     private Long id;
-    private Article article; // 게시글 (ID)
-    private String content; // 본문
 
-    private LocalDateTime createdAt; // 생성일시
-    private String createdBy; // 생성자
-    private LocalDateTime modifiedAt; // 수정일시
-    private String modifiedBy; // 수정자
+    @ManyToOne(optional = false)
+    private Article article; // 게시글 (ID)
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "userId")
+    private UserAccount userAccount; // 유저 정보 (ID)
+
+    @Column(nullable = false, length = 500)
+    private String content; // 본문 (null 안됨)
+
+    protected ArticleComment() {
+    }
+
 }
