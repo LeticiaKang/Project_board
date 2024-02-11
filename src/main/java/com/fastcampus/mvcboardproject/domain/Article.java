@@ -1,15 +1,33 @@
 package com.fastcampus.mvcboardproject.domain;
 
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 import java.time.LocalDateTime;
 
-public class Article {
+@Getter
+@Setter
+@ToString(callSuper = true)
+@Entity
+public class Article extends AuditingFields  {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter(AccessLevel.NONE)
     private Long id;
-    private String title; // 제목
-    private String content; // 본문
+
+    @ManyToOne(optional = false) // 하나의 게시물은 여러 사용자에 의해 생성됨
+    @JoinColumn(name = "userId")
+    private UserAccount userAccount; // 유저 정보 (ID)
+
+    @Column(nullable = false)
+    private String title; // 제목 (null 안됨)
+
+    @Column(nullable = false, length = 10000)
+    private String content; // 본문 (null 안됨)
+
     private String hashtag; // 해시태그
 
-    private LocalDateTime createdAt; // 생성일시
-    private String createdBy; // 생성자
-    private LocalDateTime modifiedAt; // 수정일시
-    private String modifiedBy; // 수정자
 }
