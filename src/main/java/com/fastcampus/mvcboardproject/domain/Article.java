@@ -7,9 +7,12 @@ import lombok.Setter;
 import lombok.ToString;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.util.LinkedHashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Getter
+@Setter
 @ToString
 @Table(indexes = { //검색을 위한 index를 설정
         @Index(columnList = "title"),
@@ -25,10 +28,6 @@ public class Article extends AuditingFields  {
     @Setter(AccessLevel.NONE)
     private Long id;
 
-    @ManyToOne(optional = false) // 하나의 게시물은 여러 사용자에 의해 생성됨
-    @JoinColumn(name = "userId")
-    private UserAccount userAccount; // 유저 정보 (ID)
-
     @Column(nullable = false)
     private String title; // 제목 (null 안됨)
 
@@ -36,6 +35,11 @@ public class Article extends AuditingFields  {
     private String content; // 본문 (null 안됨)
 
     private String hashtag; // 해시태그
+
+    @ToString.Exclude // 순환참조를 방지하기 위함
+    @OrderBy("createdAt DESC")    // id순으로 정렬
+    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL) // cascade = CascadeType.ALL : 양방향 바인딩 적용
+    private final Set<ArticleComment> articleComments = new LinkedHashSet<>();
 
     // Hibernate구현체를 사용하는 경우 기본 생성자를 가지고 있어야 한다. 평소에는 오픈하지 않으거라 protected로 설정, private는 작동 안됨.
     protected Article() {}

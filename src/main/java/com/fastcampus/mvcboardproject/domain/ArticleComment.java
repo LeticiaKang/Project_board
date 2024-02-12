@@ -4,7 +4,10 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.util.Objects;
+
 @Getter
+@Setter
 @ToString
 @Table(indexes = { //검색을 위한 index를 설정
         @Index(columnList = "content"),
@@ -13,19 +16,14 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 })
 @EntityListeners(AuditingEntityListener.class)
 @Entity
-@AllArgsConstructor //기본 생성자 자동 생성
 public class ArticleComment extends AuditingFields {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
     private Long id;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false) // 사용자는 여러 댓글을 가질 수 있음. 댓글이 지워진다고 게시글이 지워지면 안됨(cascade설정 안함)
     private Article article; // 게시글 (ID)
-
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "userId")
-    private UserAccount userAccount; // 유저 정보 (ID)
 
     @Column(nullable = false, length = 500)
     private String content; // 본문 (null 안됨)
@@ -41,6 +39,18 @@ public class ArticleComment extends AuditingFields {
 
     public static ArticleComment of(Article article, String content) {
         return new ArticleComment(article, content);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ArticleComment that)) return false;
+        return id != null && id.equals(that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 
 }
