@@ -36,8 +36,8 @@ dependencies {
     //서버 사이드
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     // 인증 기능
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+//    implementation 'org.springframework.boot:spring-boot-starter-security'
+//    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
     // 도메인 설계 및 DB 제공
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     runtimeOnly 'com.h2database:h2'
