@@ -1,19 +1,20 @@
 package com.fastcampus.mvcboardproject.controller;
 
+import com.fastcampus.mvcboardproject.config.SecurityConfig;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @DisplayName("Article 컨트롤러 테스트")
+@Import(SecurityConfig.class)
 @WebMvcTest(ArticleController.class) //모든 컨트롤러를 읽을 필요 없이 ArticleCommentController만 읽도록 설정
 class ArticleControllerTest {
     private final MockMvc mvc;
