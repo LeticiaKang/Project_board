@@ -26,9 +26,10 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
+    // 사용자 정의 application property를 적용하기 위해
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    // 필요없는 캐시를 꺼서 편리한 개발을 도와준다
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor' //spring boot configuration processor 디펜던시
-    // 웹 서비스 제공
     implementation 'org.springframework.boot:spring-boot-starter-web'
     // JSON API로 데이터 제공
     implementation 'org.springframework.boot:spring-boot-starter-data-rest' // spring data rest 기능을 위함
