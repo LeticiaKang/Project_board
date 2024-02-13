@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -20,7 +22,7 @@ class ArticleControllerTest {
         this.mvc = mvc;
     }
 
-    @Disabled("구현 중")
+//    @Disabled("구현 중")
     @DisplayName("[뷰][GET]게시판 목록(게시판) 조회 페이지")
     @Test
     public void GivenNothing_WhenRequestArticlesView_ThenReturnsArticlesView() throws Exception {
@@ -34,7 +36,7 @@ class ArticleControllerTest {
                 .andExpect(model().attributeExists("articles"));
     }
 
-    @Disabled("구현 중")
+//    @Disabled("구현 중")
     @DisplayName("[뷰][GET]게시글 단건 조회(3번 게시글) 페이지")
     @Test
     public void GivenNothing_WhenRequestSpecificArticleView_ThenReturnsSpecificArticleView() throws Exception {
