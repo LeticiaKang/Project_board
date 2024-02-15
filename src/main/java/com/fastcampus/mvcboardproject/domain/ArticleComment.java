@@ -8,7 +8,7 @@ import java.util.Objects;
 
 @Getter
 @Setter
-@ToString
+@ToString(callSuper = true) // 부모 클래스의 필드도 포함하여 문자열로 출력
 @Table(indexes = { //검색을 위한 index를 설정
         @Index(columnList = "content"),
         @Index(columnList = "createdAt"),
@@ -22,8 +22,12 @@ public class ArticleComment extends AuditingFields {
     @Setter(AccessLevel.NONE)
     private Long id;
 
-    @ManyToOne(optional = false) // 사용자는 여러 댓글을 가질 수 있음. 댓글이 지워진다고 게시글이 지워지면 안됨(cascade설정 안함)
+    @ManyToOne(optional = false) // 게시글은 여러 댓글을 가질 수 있음. 댓글이 지워진다고 게시글이 지워지면 안됨(cascade설정 안함)
     private Article article; // 게시글 (ID)
+
+    @Setter
+    @ManyToOne(optional = false) // 1명의 사용자는 여러 댓글을 가짐. 사용자가 탈퇴되도 글은 남아 있음.
+    private UserAccount userAccount; // 유저 정보 (ID)
 
     @Column(nullable = false, length = 500)
     private String content; // 본문 (null 안됨)
@@ -32,13 +36,14 @@ public class ArticleComment extends AuditingFields {
     protected ArticleComment() {
     }
 
-    private ArticleComment(Article article, String content) {
+    private ArticleComment(Article article, String content, UserAccount userAccount ) {
+        this.userAccount = userAccount;
         this.article = article;
         this.content = content;
     }
 
-    public static ArticleComment of(Article article, String content) {
-        return new ArticleComment(article, content);
+    public static ArticleComment of(Article article, String content, UserAccount userAccount) {
+        return new ArticleComment(article, content, userAccount);
     }
 
     @Override
