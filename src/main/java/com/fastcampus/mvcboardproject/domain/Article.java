@@ -13,7 +13,7 @@ import java.util.Set;
 
 @Getter
 @Setter
-@ToString
+@ToString(callSuper = true) // 부모 클래스의 필드도 포함하여 문자열로 출력
 @Table(indexes = { //검색을 위한 index를 설정
         @Index(columnList = "title"),
         @Index(columnList = "hashtag"),
@@ -28,6 +28,10 @@ public class Article extends AuditingFields  {
     @Setter(AccessLevel.NONE)
     private Long id;
 
+    @Setter
+    @ManyToOne(optional = false)
+    private UserAccount userAccount; // 유저 정보 (ID)
+
     @Column(nullable = false)
     private String title; // 제목 (null 안됨)
 
@@ -37,21 +41,22 @@ public class Article extends AuditingFields  {
     private String hashtag; // 해시태그
 
     @ToString.Exclude // 순환참조를 방지하기 위함
-    @OrderBy("createdAt DESC")    // id순으로 정렬
+    @OrderBy("createdAt DESC")    // createdAt순으로 정렬
     @OneToMany(mappedBy = "article", cascade = CascadeType.ALL) // cascade = CascadeType.ALL : 양방향 바인딩 적용
     private final Set<ArticleComment> articleComments = new LinkedHashSet<>();
 
     // Hibernate구현체를 사용하는 경우 기본 생성자를 가지고 있어야 한다. 평소에는 오픈하지 않으거라 protected로 설정, private는 작동 안됨.
     protected Article() {}
 
-    private Article(String title, String content, String hashtag) {
+    private Article(UserAccount userAccount, String title, String content, String hashtag) {
+        this.userAccount = userAccount;
         this.title = title;
         this.content = content;
         this.hashtag = hashtag;
     }
 
-    public static Article of(String title, String content, String hashtag) {
-        return new Article(title, content, hashtag);
+    public static Article of(UserAccount userAccount, String title, String content, String hashtag) {
+        return new Article(userAccount, title, content, hashtag);
     }
 
     // 동등성, 동일성 검사
