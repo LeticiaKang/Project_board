@@ -26,16 +26,17 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
+    // 사용자 정의 application property를 적용하기 위해
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    // 필요없는 캐시를 꺼서 편리한 개발을 도와준다
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor' //spring boot configuration processor 디펜던시
-    // 웹 서비스 제공
     implementation 'org.springframework.boot:spring-boot-starter-web'
     // JSON API로 데이터 제공
     implementation 'org.springframework.boot:spring-boot-starter-data-rest' // spring data rest 기능을 위함
     implementation 'org.springframework.data:spring-data-rest-hal-explorer' // 웹을 이용해 시각적으로 테스트할 수 있게 하기 위함
     //서버 사이드
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-    // 인증 기능
+    // 인증 기능 구현
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
     // 도메인 설계 및 DB 제공
