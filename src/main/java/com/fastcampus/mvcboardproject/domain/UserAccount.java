@@ -9,6 +9,7 @@ import java.util.Objects;
 @Setter
 @ToString(callSuper = true)
 @Table(indexes = { //검색을 위한 index를 설정
+        @Index(columnList = "userId"),
         @Index(columnList = "email", unique = true),
         @Index(columnList = "createdAt"),
         @Index(columnList = "createdBy")
@@ -16,6 +17,9 @@ import java.util.Objects;
 @Entity
 public class UserAccount extends AuditingFields {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     @Column(length = 50)
     @Setter(AccessLevel.NONE) //유저id는 불변, setter안됨
     private String userId;
