@@ -28,12 +28,15 @@ public class ArticleService {
 
     @Transactional(readOnly = true)  // 단지 읽어오는 거
     public Page<ArticleDto> searchArticles(SearchType searchType, String searchKeyword, Pageable pageable) { // page에 정렬기능
+
         // 검색어가 없는 경우(빈 문자열이거나 스페이스로 이루어진 경우)
         if (searchKeyword == null || searchKeyword.isBlank()) {
+
             return articleRepository.findAll(pageable).map(ArticleDto::from);
             // ArticleDto.from(article)를 메서드 레퍼런스로 표현하여 가독성을 높임
             // findAll(pageable)는 page를 반환하고, page는 map을 가지고 있는데,page안에 내용물을 형변환 시켜 다시 page로 바꿔준다.
         }
+
         // enum을 주제로 각 검색어에 따른 쿼리를 만든다. TODO: 필요하다면 나중에 수정하기, TODO: #을 넣을 때랑 아닐때 모두 동작 가능하게 나중에 수정하기
         return switch (searchType){
             case TITLE -> articleRepository.findByTitleContaining(searchKeyword, pageable).map(ArticleDto::from);
