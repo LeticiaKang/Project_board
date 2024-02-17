@@ -4,7 +4,9 @@ import com.fastcampus.mvcboardproject.domain.type.SearchType;
 import com.fastcampus.mvcboardproject.dto.response.ArticleResponse;
 import com.fastcampus.mvcboardproject.dto.response.ArticleWithCommentsResponse;
 import com.fastcampus.mvcboardproject.service.ArticleService;
+import com.fastcampus.mvcboardproject.service.PaginationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -29,6 +31,7 @@ import java.util.List;
 public class ArticleController {
 
     private final ArticleService  articleService;
+    private final PaginationService paginationService;
 
     @GetMapping
     // ModelMap은 컨트롤러가 뷰에 데이터를 전달하는 데 사용되는 스프링의 데이터 저장 및 검색 매커니즘
@@ -38,9 +41,14 @@ public class ArticleController {
             @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,  // 정확하고 빠른 소통을 위해 사이즈를 명시 / 최신순 정렬
             ModelMap map
     ) {
-        // 빈 리스트를 articles라는 이름으로 모델에 추가. 뷰에서 사용될 데이터를 가지고 있음.
-        map.addAttribute("articles",
-                        articleService.searchArticles(searchType, searchValue, pageable).map(ArticleResponse::from));
+        // 게시글 데이터를 가져와서 dto로 변환시켜 article객체를 생성
+        // 페이지네이션 바를 생성
+        Page<ArticleResponse> articles = articleService.searchArticles(searchType, searchValue, pageable).map(ArticleResponse::from);
+        List<Integer> barNumbers = paginationService.getPaginationBarNumbers(pageable.getPageNumber(), articles.getTotalPages());
+
+        // 데이터를 view로 보냄
+        map.addAttribute("articles", articles);
+        map.addAttribute("paginationBarNumbers", barNumbers);
 
         return "articles/index"; // "articles/index"를 반환(컨트롤러가 렌더링할 뷰의 이름)
     }
