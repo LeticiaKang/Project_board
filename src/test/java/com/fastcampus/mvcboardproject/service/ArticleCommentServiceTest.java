@@ -46,7 +46,7 @@ class ArticleCommentServiceTest {
 
         // Then
         assertThat(articleComments).isNotNull();                // 빈값이면 안됨
-        then(articleRepository).should().findById(articleId);   // articleRepository가 findById(게시글 아이디) 메서드를 호출했는지 검증
+        then(articleCommentRepository).should().findByArticle_Id(articleId);   // articleRepository가 findById(게시글 아이디) 메서드를 호출했는지 검증
     }
 
     @DisplayName("[새 댓글 생성] 댓글을 작성하면 댓글을 생성한다")
