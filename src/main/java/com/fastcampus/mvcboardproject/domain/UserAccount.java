@@ -9,7 +9,7 @@ import java.util.Objects;
 @Setter
 @ToString(callSuper = true)
 @Table(indexes = { //검색을 위한 index를 설정
-        @Index(columnList = "userId"),
+        @Index(columnList = "userId", unique = true),
         @Index(columnList = "email", unique = true),
         @Index(columnList = "createdAt"),
         @Index(columnList = "createdBy")
