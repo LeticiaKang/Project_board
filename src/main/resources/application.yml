@@ -5,8 +5,8 @@ management.endpoints.web.exposure.include: "*"
 
 logging:
   level:
-    com.fastcampus.mvcboardproject: debug
-    org.springframework.web.servlet: debug
+    com.fastcampus.mvcboardproject: error
+    org.springframework.web.servlet: error
     org.hibernate.type.descriptor.sql.BasicBinder: trace
 
 spring:

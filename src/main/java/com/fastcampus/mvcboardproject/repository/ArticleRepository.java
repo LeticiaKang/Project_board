@@ -1,6 +1,7 @@
 package com.fastcampus.mvcboardproject.repository;
 
 import com.fastcampus.mvcboardproject.domain.Article;
+import com.fastcampus.mvcboardproject.repository.querydsl.ArticleRepositoryCustom;
 import com.querydsl.core.types.dsl.DateTimeExpression;
 import com.querydsl.core.types.dsl.StringExpression;
 import com.fastcampus.mvcboardproject.domain.QArticle;
@@ -15,6 +16,7 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 @RepositoryRestResource
 public interface ArticleRepository extends
         JpaRepository<Article, Long>,
+        ArticleRepositoryCustom,
         QuerydslPredicateExecutor<Article>,
         QuerydslBinderCustomizer<QArticle> {
 

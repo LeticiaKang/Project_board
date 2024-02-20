@@ -6,6 +6,7 @@ import com.fastcampus.mvcboardproject.dto.response.ArticleWithCommentsResponse;
 import com.fastcampus.mvcboardproject.service.ArticleService;
 import com.fastcampus.mvcboardproject.service.PaginationService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -25,6 +26,7 @@ import java.util.List;
     /api/aricles/{article-id}
     /api/article/{article-id}/articleComments
  */
+@Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/articles")
 @Controller
@@ -62,6 +64,33 @@ public class ArticleController {
         map.addAttribute("articleComments", article.articleCommentsResponse());
 
         return "articles/detail";
+    }
+
+    @GetMapping("/search-hashtag")
+    public String searchHashtag(
+            @RequestParam(required = false) String searchValue,
+            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
+            ModelMap map
+    ) {
+        log.error("[컨트롤러] search-hashtag 확인, searchValue: {}", searchValue);
+
+        Page<ArticleResponse> articles = articleService.searchArticlesViaHashtag(searchValue, pageable).map(ArticleResponse::from);
+        log.error("[컨트롤러] searchArticlesViaHashtag에서 패스");
+        
+        List<Integer> barNumbers = paginationService.getPaginationBarNumbers(pageable.getPageNumber(), articles.getTotalPages());
+        log.error("[컨트롤러] getPaginationBarNumbers에서 패스");
+        
+        List<String> hashtags = articleService.getHashtags();
+        log.error("[컨트롤러] getHashtags에서 패스");
+
+        log.error("[컨트롤러] articles: {}, barNumbers: {}, hashtag: {}", articles, barNumbers, hashtags);
+
+        map.addAttribute("articles", articles);
+        map.addAttribute("hashtags", hashtags);
+        map.addAttribute("paginationBarNumbers", barNumbers);
+        map.addAttribute("searchType", SearchType.HASHTAG);
+
+        return "articles/search-hashtag";
     }
 
 }
