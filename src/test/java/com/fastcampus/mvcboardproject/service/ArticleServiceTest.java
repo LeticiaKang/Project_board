@@ -18,6 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -33,7 +34,7 @@ class ArticleServiceTest {
     @InjectMocks private ArticleService sut;  // sut : subject under test 테스트 대상을 의미 / @InjectMocks : 목을 주입하는 대상
     @Mock private ArticleRepository articleRepository;
 
-    @DisplayName("[게시글 검색] 게시글을 검색하면, 게시글 리스트를 반환한다.")
+    @DisplayName("[검색어 없이 검색] 검색어 없이 게시글을 검색하면, 게시글 리스트 페이지를 반환한다.")
     @Test
     void givenNoSearchParameters_whenSearchingArticles_thenReturnsArticlePage() {
         // Given
@@ -48,7 +49,7 @@ class ArticleServiceTest {
         then(articleRepository).should().findAll(pageable);
     }
 
-    @DisplayName("[검색어로 검색] 검색어와 함께 게시글을 검색하면, 게시글 페이지를 반환한다.")
+    @DisplayName("[검색어 함께 검색] 검색어와 함께 게시글을 검색하면, 게시글 페이지를 반환한다.")
     @Test
     void givenSearchParameters_whenSearchingArticles_thenReturnsArticlePage() {
         // Given
@@ -64,6 +65,36 @@ class ArticleServiceTest {
         // Then
         assertThat(articles).isEmpty();
         then(articleRepository).should().findByTitleContaining(searchKeyword, pageable);
+    }
+
+    @DisplayName("[검색어 없이 해시태그 검색] 검색어 없이 게시글을 해시태그 검색하면, 빈 페이지를 반환한다.")
+    @Test
+    void givenNoSearchParameters_whenSearchingArticlesViaHashtag_thenReturnsEmptyPage() {
+        // Given
+        Pageable pageable = Pageable.ofSize(20);
+
+        // When
+        Page<ArticleDto> articles = sut.searchArticlesViaHashtag(null, pageable);
+
+        // Then
+        assertThat(articles).isEqualTo(Page.empty(pageable));
+        then(articleRepository).shouldHaveNoInteractions();
+    }
+
+    @DisplayName("[검색어와 함께 해시태그 검색] 검색어와 함께 해시태그를 검색하면, 게시글 페이지를 반환한다.")
+    @Test
+    void givenHashtag_whenSearchingArticlesViaHashtag_thenReturnsArticlesPage() {
+        // Given
+        String hashtag = "#java";
+        Pageable pageable = Pageable.ofSize(20);
+        given(articleRepository.findByHashtag(hashtag, pageable)).willReturn(Page.empty(pageable));
+
+        // When
+        Page<ArticleDto> articles = sut.searchArticlesViaHashtag(hashtag, pageable);
+
+        // Then
+        assertThat(articles).isEqualTo(Page.empty(pageable));
+        then(articleRepository).should().findByHashtag(hashtag, pageable);
     }
 
     @DisplayName("[게시글 조회] 게시글을 조회하면, 게시글을 반환한다.")
@@ -87,7 +118,22 @@ class ArticleServiceTest {
         then(articleRepository).should().findById(articleId);
     }
 
-    @DisplayName("[조회 예외처리] 없는 게시글을 조회하면, 예외를 던진다.")
+    @DisplayName("[해시태그 리스트 조회] 해시태그를 조회하면, 유니크 해시태그 리스트를 반환한다")
+    @Test
+    void givenNothing_whenCalling_thenReturnsHashtags() {
+        // Given
+        List<String> expectedHashtags = List.of("#java", "#spring", "#boot");
+        given(articleRepository.findAllDistinctHashtags()).willReturn(expectedHashtags);
+
+        // When
+        List<String> actualHashtags = sut.getHashtags();
+
+        // Then
+        assertThat(actualHashtags).isEqualTo(expectedHashtags);
+        then(articleRepository).should().findAllDistinctHashtags();
+    }
+
+    @DisplayName("[없는 게시글을 조회] 없는 게시글을 조회하면, 예외를 던진다.")
     @Test
     void givenNonexistentArticleId_whenSearchingArticle_thenThrowsException() {
         // Given
@@ -106,7 +152,7 @@ class ArticleServiceTest {
         then(articleRepository).should().findById(articleId);
     }
 
-    @DisplayName("[새 게시글 저장] 게시글 정보를 입력하면, 게시글을 생성한다")
+    @DisplayName("[새 게시글 생성] 게시글 정보를 입력하면, 게시글을 생성한다")
     @Test
     void givenArticleInfo_whenSavingArticle_thenSavesArticle() {
         // Given
@@ -141,7 +187,7 @@ class ArticleServiceTest {
         then(articleRepository).should().getReferenceById(dto.id());
     }
 
-    @DisplayName("없는 게시글의 수정 정보를 입력하면, 경고 로그를 찍고 아무 것도 하지 않는다.")
+    @DisplayName("[없는 게시글 수정] 없는 게시글의 수정 정보를 입력하면, 경고 로그를 찍고 아무 것도 하지 않는다.")
     @Test
     void givenNonexistentArticleInfo_whenUpdatingArticle_thenLogsWarningAndDoesNothing() {
         // Given

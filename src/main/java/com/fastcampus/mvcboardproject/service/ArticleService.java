@@ -14,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.List;
+
 /*
     엔티티를 노출시키지 않아야 한다.
  */
@@ -79,4 +81,28 @@ public class ArticleService {
             log.warn("존재하지 않는 게시글 입니다. - articleId: {}", articleId);
         }
     }
+
+    // 해시태그 검색(해시태그 있고 검색어가 없으면 비어 있는 페이지를 반환해야 함)
+    @Transactional(readOnly = true)
+    public Page<ArticleDto> searchArticlesViaHashtag(String hashtag, Pageable pageable) {
+        log.error("[해시태그 검색] Find Articles With Hashtag = {}", hashtag);
+
+        if (hashtag == null || hashtag.isEmpty() || hashtag.isBlank()) {
+            log.error("[해시태그 검색] Search Params is Null");
+            return Page.empty(pageable);
+        }
+
+        return articleRepository.findByHashtag(hashtag, pageable).map(ArticleDto::from);
+    }
+
+    // 유니크한 해시태그를 불러옴
+    @Transactional(readOnly = true)
+    public List<String> getHashtags() {
+        List<String> uniqueHashtags = articleRepository.findAllDistinctHashtags();
+        log.error("[유니크 해시태그 조회] uniqueHashtags = {}", uniqueHashtags);
+        System.out.println(uniqueHashtags);
+
+        return uniqueHashtags;
+    }
+
 }
