@@ -70,7 +70,6 @@ public class ArticleService {
             // 해시태그는 null 가능 필드임
             article.setHashtag(dto.hashtag());
         } catch (EntityNotFoundException e) {
-            log.warn("게시글 업데이트 실패. 게시글을 찾을 수 없습니다 - dto: {}", dto);
         }
     }
 
@@ -78,17 +77,14 @@ public class ArticleService {
         try{
             articleRepository.deleteById(articleId);
         }catch (EntityNotFoundException e){
-            log.warn("존재하지 않는 게시글 입니다. - articleId: {}", articleId);
         }
     }
 
     // 해시태그 검색(해시태그 있고 검색어가 없으면 비어 있는 페이지를 반환해야 함)
     @Transactional(readOnly = true)
     public Page<ArticleDto> searchArticlesViaHashtag(String hashtag, Pageable pageable) {
-        log.error("[해시태그 검색] Find Articles With Hashtag = {}", hashtag);
 
         if (hashtag == null || hashtag.isEmpty() || hashtag.isBlank()) {
-            log.error("[해시태그 검색] Search Params is Null");
             return Page.empty(pageable);
         }
 
@@ -99,8 +95,6 @@ public class ArticleService {
     @Transactional(readOnly = true)
     public List<String> getHashtags() {
         List<String> uniqueHashtags = articleRepository.findAllDistinctHashtags();
-        log.error("[유니크 해시태그 조회] uniqueHashtags = {}", uniqueHashtags);
-        System.out.println(uniqueHashtags);
 
         return uniqueHashtags;
     }
