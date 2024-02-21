@@ -72,18 +72,10 @@ public class ArticleController {
             @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
             ModelMap map
     ) {
-        log.error("[컨트롤러] search-hashtag 확인, searchValue: {}", searchValue);
 
         Page<ArticleResponse> articles = articleService.searchArticlesViaHashtag(searchValue, pageable).map(ArticleResponse::from);
-        log.error("[컨트롤러] searchArticlesViaHashtag에서 패스");
-        
         List<Integer> barNumbers = paginationService.getPaginationBarNumbers(pageable.getPageNumber(), articles.getTotalPages());
-        log.error("[컨트롤러] getPaginationBarNumbers에서 패스");
-        
         List<String> hashtags = articleService.getHashtags();
-        log.error("[컨트롤러] getHashtags에서 패스");
-
-        log.error("[컨트롤러] articles: {}, barNumbers: {}, hashtag: {}", articles, barNumbers, hashtags);
 
         map.addAttribute("articles", articles);
         map.addAttribute("hashtags", hashtags);
