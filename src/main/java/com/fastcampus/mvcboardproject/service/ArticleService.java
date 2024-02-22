@@ -68,8 +68,12 @@ public class ArticleService {
     }
 
     public void saveArticle(ArticleDto dto) {
-        UserAccount userAccount = userAccountRepository.getReferenceById(dto.userAccountDto().userId());
-        articleRepository.save(dto.toEntity(userAccount));
+        try {
+            UserAccount userAccount = userAccountRepository.getReferenceById(dto.userAccountDto().userId());
+            articleRepository.save(dto.toEntity(userAccount));
+        } catch (EntityNotFoundException e) {
+            log.warn("게시글 저장 실패. 게시글을 찾을 수 없습니다 - dto: {}", dto);
+        }
     }
 
     public void updateArticle(Long articleId, ArticleDto dto) {
