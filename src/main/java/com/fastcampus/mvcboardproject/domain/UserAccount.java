@@ -9,7 +9,6 @@ import java.util.Objects;
 @Setter
 @ToString(callSuper = true)
 @Table(indexes = { //검색을 위한 index를 설정
-        @Index(columnList = "userId", unique = true),
         @Index(columnList = "email", unique = true),
         @Index(columnList = "createdAt"),
         @Index(columnList = "createdBy")
@@ -17,11 +16,7 @@ import java.util.Objects;
 @Entity
 public class UserAccount extends AuditingFields {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     @Column(length = 50)
-    @Setter(AccessLevel.NONE) //유저id는 불변, setter안됨
     private String userId;
 
     @Column(nullable = false) // 비밀번호는 null이면 안됨
@@ -53,13 +48,12 @@ public class UserAccount extends AuditingFields {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof UserAccount that)) return false;
-        return this.getUserId() != null && this.getUserId().equals(that.getUserId());
+        if (!(o instanceof UserAccount userAccount)) return false;
+        return userId != null && userId.equals(userAccount.userId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.getUserId());
+        return Objects.hash(userId);
     }
-
 }

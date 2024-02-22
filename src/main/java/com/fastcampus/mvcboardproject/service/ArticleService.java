@@ -1,10 +1,12 @@
 package com.fastcampus.mvcboardproject.service;
 
 import com.fastcampus.mvcboardproject.domain.Article;
-import com.fastcampus.mvcboardproject.domain.type.SearchType;
+import com.fastcampus.mvcboardproject.domain.UserAccount;
+import com.fastcampus.mvcboardproject.domain.constant.SearchType;
 import com.fastcampus.mvcboardproject.dto.ArticleDto;
 import com.fastcampus.mvcboardproject.dto.ArticleWithCommentsDto;
 import com.fastcampus.mvcboardproject.repository.ArticleRepository;
+import com.fastcampus.mvcboardproject.repository.UserAccountRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -26,6 +28,7 @@ import java.util.List;
 @Service                // 서비스 빈으로 등록
 public class ArticleService {
 
+    private final UserAccountRepository userAccountRepository;
     private final ArticleRepository articleRepository;
 
     @Transactional(readOnly = true)  // 단지 읽어오는 거
@@ -51,25 +54,32 @@ public class ArticleService {
 
     // 게시글 아이디를 통해 조회하는 메서드
     @Transactional(readOnly = true)
-    public ArticleWithCommentsDto getArticle(Long articleId) {
+    public ArticleWithCommentsDto getArticleWithComments(Long articleId) {
         return articleRepository.findById(articleId)
-                .map(ArticleWithCommentsDto::from)          //dto로 변환
+                .map(ArticleWithCommentsDto::from)
+                .orElseThrow(() -> new EntityNotFoundException("게시글이 없습니다 - articleId: " + articleId));
+    }
+
+    @Transactional(readOnly = true)
+    public ArticleDto getArticle(Long articleId) {
+        return articleRepository.findById(articleId)
+                .map(ArticleDto::from)
                 .orElseThrow(() -> new EntityNotFoundException("게시글이 없습니다 - articleId: " + articleId));
     }
 
     public void saveArticle(ArticleDto dto) {
-        articleRepository.save(dto.toEntity());
+        UserAccount userAccount = userAccountRepository.getReferenceById(dto.userAccountDto().userId());
+        articleRepository.save(dto.toEntity(userAccount));
     }
 
-    public void updateArticle(ArticleDto dto) {
+    public void updateArticle(Long articleId, ArticleDto dto) {
         try {
-            Article article = articleRepository.getReferenceById(dto.id());
-            // not null필드에 대한 방어로직
-            if (dto.title() != null) { article.setTitle(dto.title()); }
+            Article article = articleRepository.getReferenceById(articleId);
+            if (dto.title() != null) { article.setTitle(dto.title()); } // not null필드에 대한 방어로직
             if (dto.content() != null) { article.setContent(dto.content()); }
-            // 해시태그는 null 가능 필드임
             article.setHashtag(dto.hashtag());
         } catch (EntityNotFoundException e) {
+            log.warn("게시글 업데이트 실패. 게시글을 찾을 수 없습니다 - dto: {}", dto);
         }
     }
 
@@ -78,6 +88,10 @@ public class ArticleService {
             articleRepository.deleteById(articleId);
         }catch (EntityNotFoundException e){
         }
+    }
+
+    public long getArticleCount() {
+        return articleRepository.count();
     }
 
     // 해시태그 검색(해시태그 있고 검색어가 없으면 비어 있는 페이지를 반환해야 함)

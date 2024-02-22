@@ -25,8 +25,8 @@ public class ArticleComment extends AuditingFields {
     @ManyToOne(optional = false) // 게시글은 여러 댓글을 가질 수 있음. 댓글이 지워진다고 게시글이 지워지면 안됨(cascade설정 안함)
     private Article article; // 게시글 (ID)
 
-    @Setter
     @ManyToOne(optional = false) // 1명의 사용자는 여러 댓글을 가짐. 사용자가 탈퇴되도 글은 남아 있음.
+    @JoinColumn(name = "userId")
     private UserAccount userAccount; // 유저 정보 (ID)
 
     @Column(nullable = false, length = 500)

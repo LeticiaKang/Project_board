@@ -28,8 +28,8 @@ public class Article extends AuditingFields  {
     @Setter(AccessLevel.NONE)
     private Long id;
 
-    @Setter
     @ManyToOne(optional = false)
+    @JoinColumn(name = "userId")
     private UserAccount userAccount; // 유저 정보 (ID)
 
     @Column(nullable = false)
