@@ -1,9 +1,13 @@
 package com.fastcampus.mvcboardproject.config;
 
+import com.fastcampus.mvcboardproject.dto.security.BoardPrincipal;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 
 import java.util.Optional;
 
@@ -12,9 +16,13 @@ import java.util.Optional;
 public class JpaConfig {
 
     @Bean
-    // 생성자를 자동으로 넣기 위함
     public AuditorAware<String> auditorAware(){
-        return () -> Optional.of("테스터_작성자");
-        //TODO: 스프린 시큐리티로 인증 기능을 붙이게 될 때, 수정하기
+        return () -> Optional.ofNullable(SecurityContextHolder.getContext())
+                .map(SecurityContext::getAuthentication)
+                .filter(Authentication::isAuthenticated)  // 로그인한 상태인지 확인
+                .map(Authentication::getPrincipal)  // getPrincipal : return Object
+                .map(BoardPrincipal.class::cast)    // Type Casting
+                .map(BoardPrincipal::getUsername);
     }
+
 }
