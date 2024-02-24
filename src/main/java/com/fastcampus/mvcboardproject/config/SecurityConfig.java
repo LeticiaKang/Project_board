@@ -32,6 +32,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests((auth) -> auth
+                    .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                     .requestMatchers(HttpMethod.GET, "/", "/articles", "/articles/search-hashtag").permitAll()
                     .anyRequest().authenticated()
             )
@@ -43,13 +44,6 @@ public class SecurityConfig {
                     logout -> logout
                             .logoutSuccessUrl("/"));
         return http.build();
-    }
-
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return web -> {
-            web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
-        };
     }
 
     /*
