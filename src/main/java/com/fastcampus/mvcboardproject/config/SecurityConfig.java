@@ -6,6 +6,7 @@ import com.fastcampus.mvcboardproject.repository.UserAccountRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.core.userdetails.User;
@@ -21,6 +22,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
+import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 public class SecurityConfig {
@@ -30,19 +34,19 @@ public class SecurityConfig {
      */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-            .authorizeHttpRequests((auth) -> auth
+        http.authorizeHttpRequests((auth) -> auth
                     .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                     .requestMatchers(HttpMethod.GET, "/", "/articles", "/articles/search-hashtag").permitAll()
                     .anyRequest().authenticated()
             )
             .formLogin(
-                    form -> form
-                            .loginPage("/login")
-                            .loginProcessingUrl("/users"))
+                    withDefaults()
+            )
             .logout(
                     logout -> logout
-                            .logoutSuccessUrl("/"));
+                            .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                            .permitAll()
+            );
         return http.build();
     }
 
@@ -54,11 +58,11 @@ public class SecurityConfig {
      */
     @Bean
     public UserDetailsService userDetailsService(UserAccountRepository userAccountRepository) {
-        return username -> userAccountRepository
-                .findById(username)            // User 객체를 가여좀
-                .map(UserAccountDto::from)     // User 객체를 UserAccountDto로 변환함(작성, 수정 정보는 null)
-                .map(BoardPrincipal::from)     // 권한이 추가되어 BoardPrincipal객체로 변환
-                .orElseThrow(() -> new UsernameNotFoundException("유저를 찾을 수 없습니다 - username: " + username));
+        return username ->
+                userAccountRepository.findById(username)            // User 객체를 가여좀
+                        .map(UserAccountDto::from)     // User 객체를 UserAccountDto로 변환함(작성, 수정 정보는 null)
+                        .map(BoardPrincipal::from)     // 권한이 추가되어 BoardPrincipal객체로 변환
+                        .orElseThrow(() -> new UsernameNotFoundException("유저를 찾을 수 없습니다 - username: " + username));
     }
 
     /*

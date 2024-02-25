@@ -55,10 +55,10 @@ public class ArticleCommentService {
         }
     }
 
-    public void deleteArticleComment(Long articleCommentId) {
+    public void deleteArticleComment(long articleCommentId, String userId) {
         // 1. 댓글 정보 가져오기 -> 없으면 경고   2.댓글 없애기
         try{
-            articleCommentRepository.deleteById(articleCommentId);
+            articleCommentRepository.deleteByIdAndUserAccount_UserId(articleCommentId, userId);
         }catch (EntityNotFoundException e){
             log.warn("존재하지 않는 댓글입니다. 댓글 번호: {}", articleCommentId);
         }
