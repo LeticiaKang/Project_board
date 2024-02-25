@@ -251,13 +251,13 @@ class ArticleServiceTest {
         // Given
         Long articleId = 1L;
         String userId = "uno";
-        willDoNothing().given(articleRepository).deleteArticle(articleId, userId);
+        willDoNothing().given(articleRepository).deleteByIdAndUserAccount_UserId(articleId, userId);
 
         // When
         sut.deleteArticle(1L, userId);
 
         // Then
-        then(articleRepository).should().deleteArticle(articleId, userId);
+        then(articleRepository).should().deleteByIdAndUserAccount_UserId(articleId, userId);
     }
 
     // --------  테스트에서 사용되는 가짜(Article) 객체를 생성하는 유틸리티 메서드 -------

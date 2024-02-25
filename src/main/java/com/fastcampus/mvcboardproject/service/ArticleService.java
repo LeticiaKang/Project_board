@@ -79,7 +79,7 @@ public class ArticleService {
     public void updateArticle(Long articleId, ArticleDto dto) {
         try {
             Article article = articleRepository.getReferenceById(articleId);
-            UserAccount userAccount = userAccountRepository.getReferenceById(dto.userAccountDto().userId());
+            UserAccount userAccount = userAccountRepository.getReferenceById(dto.userAccountDto().userId());   //articleRequest.toDto(boardPrincipal.toDto()
 
             if (article.getUserAccount().equals(userAccount)) {
                 if (dto.title() != null) { article.setTitle(dto.title()); }   //null 방어로직
@@ -93,7 +93,7 @@ public class ArticleService {
 
     public void deleteArticle(long articleId, String userId) {
         try{
-            articleRepository.deleteArticle(articleId, userId);
+            articleRepository.deleteByIdAndUserAccount_UserId(articleId, userId);
         }catch (EntityNotFoundException e){
         }
     }
