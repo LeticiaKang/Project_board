@@ -1,6 +1,7 @@
 package com.fastcampus.mvcboardproject.repository;
 
 import com.fastcampus.mvcboardproject.domain.Article;
+import com.fastcampus.mvcboardproject.repository.querydsl.ArticleRepositoryCustom;
 import com.querydsl.core.types.dsl.DateTimeExpression;
 import com.querydsl.core.types.dsl.StringExpression;
 import com.fastcampus.mvcboardproject.domain.QArticle;
@@ -15,6 +16,7 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 @RepositoryRestResource
 public interface ArticleRepository extends
         JpaRepository<Article, Long>,
+        ArticleRepositoryCustom,
         QuerydslPredicateExecutor<Article>,
         QuerydslBinderCustomizer<QArticle> {
 
@@ -23,6 +25,8 @@ public interface ArticleRepository extends
     Page<Article> findByUserAccount_UserIdContaining(String userId, Pageable pageable);
     Page<Article> findByUserAccount_NicknameContaining(String nickname, Pageable pageable);
     Page<Article> findByHashtag(String hashtag, Pageable pageable);  // 해시태그는 일종의 카테고리이기 때문에 정확하게 일치해야 함
+
+    void deleteByIdAndUserAccount_UserId(Long articleId, String userid);
 
     @Override
     default void customize(QuerydslBindings bindings, QArticle root) {

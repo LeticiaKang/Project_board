@@ -1,10 +1,12 @@
 package com.fastcampus.mvcboardproject.service;
 
 import com.fastcampus.mvcboardproject.domain.Article;
-import com.fastcampus.mvcboardproject.domain.type.SearchType;
+import com.fastcampus.mvcboardproject.domain.UserAccount;
+import com.fastcampus.mvcboardproject.domain.constant.SearchType;
 import com.fastcampus.mvcboardproject.dto.ArticleDto;
 import com.fastcampus.mvcboardproject.dto.ArticleWithCommentsDto;
 import com.fastcampus.mvcboardproject.repository.ArticleRepository;
+import com.fastcampus.mvcboardproject.repository.UserAccountRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -13,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
 
 /*
     엔티티를 노출시키지 않아야 한다.
@@ -24,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service                // 서비스 빈으로 등록
 public class ArticleService {
 
+    private final UserAccountRepository userAccountRepository;
     private final ArticleRepository articleRepository;
 
     @Transactional(readOnly = true)  // 단지 읽어오는 거
@@ -49,34 +54,71 @@ public class ArticleService {
 
     // 게시글 아이디를 통해 조회하는 메서드
     @Transactional(readOnly = true)
-    public ArticleWithCommentsDto getArticle(Long articleId) {
+    public ArticleWithCommentsDto getArticleWithComments(Long articleId) {
         return articleRepository.findById(articleId)
-                .map(ArticleWithCommentsDto::from)          //dto로 변환
+                .map(ArticleWithCommentsDto::from)
+                .orElseThrow(() -> new EntityNotFoundException("게시글이 없습니다 - articleId: " + articleId));
+    }
+
+    @Transactional(readOnly = true)
+    public ArticleDto getArticle(Long articleId) {
+        return articleRepository.findById(articleId)
+                .map(ArticleDto::from)
                 .orElseThrow(() -> new EntityNotFoundException("게시글이 없습니다 - articleId: " + articleId));
     }
 
     public void saveArticle(ArticleDto dto) {
-        articleRepository.save(dto.toEntity());
-    }
-
-    public void updateArticle(ArticleDto dto) {
         try {
-            Article article = articleRepository.getReferenceById(dto.id());
-            // not null필드에 대한 방어로직
-            if (dto.title() != null) { article.setTitle(dto.title()); }
-            if (dto.content() != null) { article.setContent(dto.content()); }
-            // 해시태그는 null 가능 필드임
-            article.setHashtag(dto.hashtag());
+            UserAccount userAccount = userAccountRepository.getReferenceById(dto.userAccountDto().userId());
+            articleRepository.save(dto.toEntity(userAccount));
         } catch (EntityNotFoundException e) {
-            log.warn("게시글 업데이트 실패. 게시글을 찾을 수 없습니다 - dto: {}", dto);
+            log.warn("게시글 저장 실패. 게시글을 찾을 수 없습니다 - dto: {}", dto);
         }
     }
 
-    public void deleteArticle(long articleId) {
-        try{
-            articleRepository.deleteById(articleId);
-        }catch (EntityNotFoundException e){
-            log.warn("존재하지 않는 게시글 입니다. - articleId: {}", articleId);
+    public void updateArticle(Long articleId, ArticleDto dto) {
+        try {
+            Article article = articleRepository.getReferenceById(articleId);
+            UserAccount userAccount = userAccountRepository.getReferenceById(dto.userAccountDto().userId());   //articleRequest.toDto(boardPrincipal.toDto()
+
+            if (article.getUserAccount().equals(userAccount)) {
+                if (dto.title() != null) { article.setTitle(dto.title()); }   //null 방어로직
+                if (dto.content() != null) { article.setContent(dto.content()); }
+                article.setHashtag(dto.hashtag());
+            }
+        } catch (EntityNotFoundException e) {
+            log.warn("게시글 업데이트 실패. 게시글을 수정하는데 필요한 정보를 찾을 수 없습니다 - {}", e.getLocalizedMessage());
         }
     }
+
+    public void deleteArticle(long articleId, String userId) {
+        try{
+            articleRepository.deleteByIdAndUserAccount_UserId(articleId, userId);
+        }catch (EntityNotFoundException e){
+        }
+    }
+
+    public long getArticleCount() {
+        return articleRepository.count();
+    }
+
+    // 해시태그 검색(해시태그 있고 검색어가 없으면 비어 있는 페이지를 반환해야 함)
+    @Transactional(readOnly = true)
+    public Page<ArticleDto> searchArticlesViaHashtag(String hashtag, Pageable pageable) {
+
+        if (hashtag == null || hashtag.isEmpty() || hashtag.isBlank()) {
+            return Page.empty(pageable);
+        }
+
+        return articleRepository.findByHashtag(hashtag, pageable).map(ArticleDto::from);
+    }
+
+    // 유니크한 해시태그를 불러옴
+    @Transactional(readOnly = true)
+    public List<String> getHashtags() {
+        List<String> uniqueHashtags = articleRepository.findAllDistinctHashtags();
+
+        return uniqueHashtags;
+    }
+
 }
