@@ -34,13 +34,19 @@ public class SecurityConfig {
      */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests((auth) -> auth
+        http
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests((auth) -> auth
                     .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                     .requestMatchers(HttpMethod.GET, "/", "/articles", "/articles/search-hashtag").permitAll()
                     .anyRequest().authenticated()
             )
             .formLogin(
-                    withDefaults()
+                    form -> form
+                            .loginPage("/login")
+                            .loginProcessingUrl("/login")
+                            .defaultSuccessUrl("/")
+                            .permitAll()
             )
             .logout(
                     logout -> logout
