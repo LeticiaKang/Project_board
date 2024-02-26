@@ -2,7 +2,6 @@ package com.fastcampus.mvcboardproject.dto.response;
 
 import com.fastcampus.mvcboardproject.dto.ArticleWithCommentsDto;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
 import java.util.Set;

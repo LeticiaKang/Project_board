@@ -1,8 +1,6 @@
 package com.fastcampus.mvcboardproject.controller;
 
-import com.fastcampus.mvcboardproject.dto.UserAccountDto;
 import com.fastcampus.mvcboardproject.dto.request.ArticleCommentRequest;
-import com.fastcampus.mvcboardproject.dto.request.ArticleRequest;
 import com.fastcampus.mvcboardproject.dto.security.BoardPrincipal;
 import com.fastcampus.mvcboardproject.service.ArticleCommentService;
 import lombok.RequiredArgsConstructor;

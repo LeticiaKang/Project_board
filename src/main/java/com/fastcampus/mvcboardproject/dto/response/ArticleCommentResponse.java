@@ -2,7 +2,6 @@ package com.fastcampus.mvcboardproject.dto.response;
 
 import com.fastcampus.mvcboardproject.dto.ArticleCommentDto;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 public record ArticleCommentResponse(

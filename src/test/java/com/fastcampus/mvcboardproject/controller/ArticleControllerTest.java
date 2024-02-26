@@ -1,6 +1,5 @@
 package com.fastcampus.mvcboardproject.controller;
 
-import com.fastcampus.mvcboardproject.config.SecurityConfig;
 import com.fastcampus.mvcboardproject.config.TestSecurityConfig;
 import com.fastcampus.mvcboardproject.domain.constant.FormStatus;
 import com.fastcampus.mvcboardproject.domain.constant.SearchType;

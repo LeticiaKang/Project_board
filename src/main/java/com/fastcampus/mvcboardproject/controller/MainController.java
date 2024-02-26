@@ -1,6 +1,5 @@
 package com.fastcampus.mvcboardproject.controller;
 
-import com.fastcampus.mvcboardproject.dto.response.UserAccountResponse;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;

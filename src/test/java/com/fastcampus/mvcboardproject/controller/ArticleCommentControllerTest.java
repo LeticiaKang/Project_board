@@ -1,6 +1,5 @@
 package com.fastcampus.mvcboardproject.controller;
 
-import com.fastcampus.mvcboardproject.config.SecurityConfig;
 import com.fastcampus.mvcboardproject.config.TestSecurityConfig;
 import com.fastcampus.mvcboardproject.dto.ArticleCommentDto;
 import com.fastcampus.mvcboardproject.dto.request.ArticleCommentRequest;

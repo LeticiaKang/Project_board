@@ -1,6 +1,5 @@
 package com.fastcampus.mvcboardproject.controller;
 
-import com.fastcampus.mvcboardproject.config.SecurityConfig;
 import com.fastcampus.mvcboardproject.config.TestSecurityConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
