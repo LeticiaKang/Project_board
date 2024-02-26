@@ -2,7 +2,6 @@ package com.fastcampus.mvcboardproject.controller;
 
 import com.fastcampus.mvcboardproject.domain.constant.FormStatus;
 import com.fastcampus.mvcboardproject.domain.constant.SearchType;
-import com.fastcampus.mvcboardproject.dto.UserAccountDto;
 import com.fastcampus.mvcboardproject.dto.request.ArticleRequest;
 import com.fastcampus.mvcboardproject.dto.response.ArticleResponse;
 import com.fastcampus.mvcboardproject.dto.response.ArticleWithCommentsResponse;
