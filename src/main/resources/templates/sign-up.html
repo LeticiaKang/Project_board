@@ -1,33 +1,74 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>회원 가입</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Sign Up Form by Colorlib</title>
+
+    <!-- Font Icon -->
+    <link rel="stylesheet" href="/fonts/material-icon/css/material-design-iconic-font.min.css">
+
+    <!-- Main css -->
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-  <header>
-    header 템플릿 삽입부
-    <hr>
-  </header>
 
-  <form>
-    <label for="userId">ID</label>
-    <input id="userId" type="text" required>
-    <label for="password">Password</label>
-    <input id="password" type="password" required>
-    <label for="email">Email</label>
-    <input id="email" type="email" placeholder="you@example.com">
-    <label for="nickname">Nickname</label>
-    <input id="nickname" type="text">
-    <label for="memo">메모</label>
-    <textarea id="memo" rows="3"></textarea>
-    <button type="submit">가입</button>
-  </form>
+    <div class="main">
 
-  <footer>
-    <hr>
-    footer 템플릿 삽입부
-  </footer>
+        <!-- Sign up form -->
+        <section class="signup">
+            <div class="container">
+                <div class="signup-content">
+                    <div class="signup-form">
+                        <h2 class="form-title">회원가입</h2>
 
-</body>
+                        <form th:action="@{/sign-up/save}" th:object="${user}" th:method="post" class="signUp-form" id="signUp-form">
+                            <div class="form-group">
+                                <label for="userId"><i class="zmdi zmdi-account material-icons-name"></i></label>
+                                <input type="text" th:field="*{userId}" id="userId" placeholder="아이디"/>
+                            </div>
+                            <div class="form-group">
+                                <label for="email"><i class="zmdi zmdi-email"></i></label>
+                                <input type="email" th:field="*{email}" id="email" placeholder="이메일"/>
+                            </div>
+                            <div class="form-group">
+                                <label for="password"><i class="zmdi zmdi-lock"></i></label>
+                                <input type="password" th:field="*{userPassword}"name="password" id="password" placeholder="비빌번호"/>
+                            </div>
+                            <div class="form-group">
+                                <label for="re_pass"><i class="zmdi zmdi-lock-outline"></i></label>
+                                <input type="password" name="re_pass" id="re_pass" placeholder="비밀번호 재입력"/>
+                            </div>
+                            <div class="form-group">
+                                <label for="nickname"><i class="zmdi zmdi-account material-icons-name"></i></label>
+                                <input type="text" th:field="*{nickname}" id="nickname" placeholder="닉네임"/>
+                            </div>
+                            <div class="form-group">
+                                <label for="memo"><i class="zmdi zmdi-account material-icons-name"></i></label>
+                                <input type="text" name="memo" id="memo" placeholder="메모"/>
+                            </div>
+<!--                            <div class="form-group">-->
+<!--                                <input type="checkbox" name="agree-term" id="agree-term" class="agree-term" />-->
+<!--                                <label for="agree-term" class="label-agree-term"><span><span></span></span> <a href="#" class="term-service">약관</a></label>에 동의합니다.-->
+<!--                            </div>-->
+                            <div class="form-group form-button">
+                                <input type="submit" name="signup" id="signup" class="form-submit" value="가입"/>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="signup-image">
+                        <figure><img src="/images/signup-image.jpg" alt="sing up image"></figure>
+                        <a href="/" class="signup-image-link">홈으로 돌아가기</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- JS -->
+    <script src="/vendor/jquery/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+</body><!-- This templates was made by Colorlib (https://colorlib.com) -->
 </html>
