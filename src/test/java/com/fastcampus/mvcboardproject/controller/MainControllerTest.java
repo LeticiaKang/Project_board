@@ -33,4 +33,11 @@ class MainControllerTest {
                 .andDo(MockMvcResultHandlers.print());
     }
 
+    @Test
+    public void givenSignUpPage_whenAccessed_thenDisplaysSignUpForm() throws Exception {
+        mvc.perform(get("/sign-up"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("sign-up"));
+    }
+
 }
