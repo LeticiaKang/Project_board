@@ -27,20 +27,28 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests((auth) -> auth
                     .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                    .requestMatchers(HttpMethod.GET, "/", "/articles", "/articles/search-hashtag").permitAll()
+                    .requestMatchers(HttpMethod.GET,
+                            "/",
+                            "/articles",
+                            "/articles/search-hashtag",
+                            "/sign-up").permitAll()
                     .anyRequest().authenticated()
             )
             .formLogin(
                     form -> form
                             .loginPage("/login")
                             .loginProcessingUrl("/login")
+                            .usernameParameter("username") // 로그인 폼의 사용자 이름 필드 이름
+                            .passwordParameter("password") // 로그인 폼의 비밀번호 필드 이름
                             .defaultSuccessUrl("/")
                             .permitAll()
             )
-            .logout(
-                    logout -> logout
-                            .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                            .permitAll()
+            .logout(logout -> logout
+                    .logoutRequestMatcher(new AntPathRequestMatcher("/logout")) // 로그아웃을 처리할 경로 지정
+                    .logoutSuccessUrl("/") // 로그아웃 성공 후 리디렉션될 경로 지정
+                    .invalidateHttpSession(true) // 로그아웃 시 HTTP 세션을 무효화
+                    .deleteCookies("JSESSIONID") // 로그아웃 시 쿠키 삭제
+                    .permitAll()
             );
         return http.build();
     }
