@@ -1,100 +1,84 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
 	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-<!--===============================================================================================-->	
-	<link rel="icon" type="image/png" href="/images/icons/favicon.ico"/>
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="/vendor/bootstrap/css/bootstrap.min.css">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="/vendor/animate/animate.css">
-<!--===============================================================================================-->	
-	<link rel="stylesheet" type="text/css" href="/vendor/css-hamburgers/hamburgers.min.css">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="/vendor/select2/select2.min.css">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="/css/util.css">
-	<link rel="stylesheet" type="text/css" href="/css/main.css">
-<!--===============================================================================================-->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>로그인</title>
+
+<!-- Font Icon -->
+<link rel="stylesheet" href="/fonts/material-icon/css/material-design-iconic-font.min.css">
+
+<!-- Main css -->
+<link rel="stylesheet" href="/css/style.css">
+
 </head>
 <body>
-	
-	<div class="limiter">
-		<div class="container-login100">
-			<div class="wrap-login100">
-				<div class="login100-pic js-tilt" data-tilt>
-					<img src="/images/img-01.png" alt="IMG">
+	<div class="main">
+
+		<!-- Sing in  Form -->
+		<section class="sign-in">
+			<div class="container">
+				<div class="signin-content">
+					<div class="signin-image">
+						<figure>
+							<img src="/images/signin-image.jpg" alt="sing up image">
+							<a href="/" class="signin-image-link">홈으로 돌아가기</a>
+						</figure>
+					</div>
+
+					<div class="signin-form">
+						<h2 class="form-title">로그인</h2>
+						<form method="POST" class="register-form" id="login-form">
+							<!------------- 아이디 ------------------>
+							<div class="form-group">
+								<label for="username"><i class="zmdi zmdi-account material-icons-name"></i></label>
+								<input type="text" name="username" id="username" placeholder="아이디"/>
+							</div>
+							<!------------- 비밀번호 ------------------>
+							<div class="form-group">
+								<label for="password"><i class="zmdi zmdi-lock"></i></label>
+								<input type="password" name="password" id="password" placeholder="비밀번호"/>
+							</div>
+
+							<!------------- 아이디 기억하기 ------------------>
+<!--							<div class="form-group">-->
+<!--								<input type="checkbox" name="remember-me" id="remember-me" class="agree-term" />-->
+<!--								<label for="remember-me" class="label-agree-term"><span><span></span></span>아이디 기억하기</label>-->
+<!--							</div>-->
+
+							<!------------- 로그인 버튼 ------------------>
+							<div class="form-group form-button">
+								<input type="submit" name="signin" id="signin" class="form-submit" value="Log in"/>
+							</div>
+
+							<div class="text-center p-t-136">
+								<span class="txt2">아직 회원가입을 안하셨나요?</span>
+								<a class="txt2" th:href="@{/sign-up}">
+									회원가입
+									<i class="fa fa-long-arrow-right m-l-5" aria-hidden="true"></i>
+								</a>
+							</div>
+
+						</form>
+						<div class="social-login">
+							<span class="social-label">Or login with</span>
+							<ul class="socials">
+								<li><a href="#"><i class="display-flex-center zmdi zmdi-facebook"></i></a></li>
+								<li><a href="#"><i class="display-flex-center zmdi zmdi-twitter"></i></a></li>
+								<li><a href="#"><i class="display-flex-center zmdi zmdi-google"></i></a></li>
+							</ul>
+						</div>
+					</div>
 				</div>
-
-				<form class="login100-form validate-form" th:action="@{/login}" method="post">
-					<span class="login100-form-title">
-						로그인
-					</span>
-
-					<div class="wrap-input100 validate-input" data-validate = "아이디를 입력하세요">
-						<input class="input100" type="text" name="userId" placeholder="아이디">
-						<span class="focus-input100"></span>
-						<span class="symbol-input100">
-							<i class="fa fa-envelope" aria-hidden="true"></i>
-						</span>
-					</div>
-
-					<div class="wrap-input100 validate-input" data-validate = "패스워드를 입력하세요.">
-						<input class="input100" type="password" name="pass" placeholder="비밀번호">
-						<span class="focus-input100"></span>
-						<span class="symbol-input100">
-							<i class="fa fa-lock" aria-hidden="true"></i>
-						</span>
-					</div>
-					
-					<div class="container-login100-form-btn">
-						<button class="login100-form-btn">
-							로그인
-						</button>
-					</div>
-
-					<div class="text-center p-t-12">
-						<a class="txt2" href="#">
-							아이디 / 비밀번호
-						</a>
-						<span class="txt1">
-							찾기
-						</span>
-					</div>
-
-					<div class="text-center p-t-136">
-						<span class="txt2">아직 회원가입을 안하셨나요?</span>
-						<a class="txt2" th:href="@{/sign-up}">
-							회원가입
-							<i class="fa fa-long-arrow-right m-l-5" aria-hidden="true"></i>
-						</a>
-					</div>
-				</form>
 			</div>
-		</div>
-	</div>
-	
-	
+		</section>
 
-	
-<!--===============================================================================================-->	
-	<script src="/vendor/jquery/jquery-3.2.1.min.js"></script>
-<!--===============================================================================================-->
-	<script src="/vendor/bootstrap/js/popper.js"></script>
-	<script src="/vendor/bootstrap/js/bootstrap.min.js"></script>
-<!--===============================================================================================-->
-	<script src="/vendor/select2/select2.min.js"></script>
-<!--===============================================================================================-->
-	<script src="/vendor/tilt/tilt.jquery.min.js"></script>
-	<script >
-		$('.js-tilt').tilt({
-			scale: 1.1
-		})
-	</script>
-<!--===============================================================================================-->
+	</div>
+
+
+	<!-- JS -->
+	<script src="/vendor/jquery/jquery.min.js"></script>
 	<script src="/js/main.js"></script>
 
 </body>
