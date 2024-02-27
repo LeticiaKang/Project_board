@@ -8,6 +8,7 @@ logging:
     com.fastcampus.mvcboardproject: error
     org.springframework.web.servlet: error
     org.hibernate.type.descriptor.sql.BasicBinder: trace
+    org.springframework.security: DEBUG
 
 spring:
   datasource:

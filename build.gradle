@@ -26,6 +26,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
+    implementation 'jakarta.validation:jakarta.validation-api:3.1.0-M1'
+
     // 사용자 정의 application property를 적용하기 위해
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     // 필요없는 캐시를 꺼서 편리한 개발을 도와준다
