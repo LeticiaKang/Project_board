@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -21,26 +22,31 @@ import java.util.Optional;
 public class UserAccountServiceImpl implements UserAccountService {
 
     private final UserAccountRepository userAccountRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public ResponseEntity saveUser (UserAccountDto userDto) {
+    public void saveUser (UserAccountDto user) {
 
-        log.error("[User 서비스] userDto : {}", userDto);
+        log.error("[User 서비스] user : {}", user);
+        System.out.println("[User 서비스] user : " + user);
 
-        Optional<UserAccount> existingUser = userAccountRepository.findById(userDto.toEntity().getUserId());
+        UserAccount saveUser = UserAccount.of(user.userId(), user.userPassword(), user.email(), user.nickname(), user.memo());
+        saveUser.setUserPassword(passwordEncoder.encode(user.userPassword()));
 
+        Optional<UserAccount> existingUser = userAccountRepository.findById(user.toEntity().getUserId());
         log.error("[User 서비스] existingUser : {}", existingUser);
+        System.out.println("[User 서비스] existingUser : " + existingUser);
 
         // 아이디 중복 검사
         if (existingUser.isEmpty()) {
-            UserAccount user = userDto.toEntity();
 
-            log.error("[User 서비스] user엔티티 : {}", user);
+            log.error("[User 서비스] user엔티티 : {}", saveUser);
+            System.out.println("[User 서비스] user엔티티 : " + saveUser);
 
-            userAccountRepository.saveAndFlush(user);
+            userAccountRepository.saveAndFlush(saveUser);
 
-            return new ResponseEntity("success", HttpStatus.OK);
+//            return new ResponseEntity("success", HttpStatus.OK);
         } else {
-            return new ResponseEntity("fail", HttpStatus.OK);
+//            return new ResponseEntity("fail", HttpStatus.OK);
         }
     }
 }

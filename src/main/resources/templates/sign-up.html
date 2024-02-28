@@ -11,6 +11,7 @@
 
     <!-- Main css -->
     <link rel="stylesheet" href="/css/style.css">
+
 </head>
 <body>
 
@@ -23,18 +24,18 @@
                     <div class="signup-form">
                         <h2 class="form-title">회원가입</h2>
 
-                        <form th:action="@{/sign-up/save}" th:object="${user}" th:method="post" class="signUp-form" id="signUp-form">
+                        <form th:action="@{/sign-up/save}" th:method="post" th:object="${user}" class="signUp-form" id="signUp-form" onsubmit="return validateForm()">
                             <div class="form-group">
                                 <label for="userId"><i class="zmdi zmdi-account material-icons-name"></i></label>
-                                <input type="text" th:field="*{userId}" id="userId" placeholder="아이디"/>
+                                <input type="text" name="userId" id="userId" placeholder="아이디"/>
                             </div>
                             <div class="form-group">
                                 <label for="email"><i class="zmdi zmdi-email"></i></label>
-                                <input type="email" th:field="*{email}" id="email" placeholder="이메일"/>
+                                <input type="email" name="email" id="email" placeholder="이메일"/>
                             </div>
                             <div class="form-group">
                                 <label for="password"><i class="zmdi zmdi-lock"></i></label>
-                                <input type="password" th:field="*{userPassword}"name="password" id="password" placeholder="비빌번호"/>
+                                <input type="password" name="userPassword" id="password" placeholder="비빌번호"/>
                             </div>
                             <div class="form-group">
                                 <label for="re_pass"><i class="zmdi zmdi-lock-outline"></i></label>
@@ -42,7 +43,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="nickname"><i class="zmdi zmdi-account material-icons-name"></i></label>
-                                <input type="text" th:field="*{nickname}" id="nickname" placeholder="닉네임"/>
+                                <input type="text" name="nickname" id="nickname" placeholder="닉네임"/>
                             </div>
                             <div class="form-group">
                                 <label for="memo"><i class="zmdi zmdi-account material-icons-name"></i></label>

@@ -12,7 +12,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.User;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,17 +40,17 @@ public class MainController {
 
     // [GET] 회원가입 페이지
     @GetMapping("/sign-up")
-    public String RegistrationForm(ModelMap model){
+    public String RegistrationForm(){
         return "sign-up";
     }
 
     // [POST] 회원가입 정보 저장
-    @PostMapping("/singn-up/save")
-    public String Registration(@Valid @ModelAttribute("user") UserAccountDto user,
-                               @AuthenticationPrincipal BoardPrincipal boardPrincipal,
-                               UserAccountRequest userAccountRequest
-    ){
-        log.error("[MainController] 유저 : {}, 권한 : {}, 요청: {}", user, boardPrincipal, userAccountRequest);
+    @PostMapping("/sign-up/save")
+    public String Registration(@ModelAttribute("user") UserAccountDto user
+    ) {
+        log.info("[MainController] 유저 정보: {}", user);
+        System.out.println("[MainController] 유저 정보: " + user);
+
         userAccountService.saveUser(user);
         return "redirect:/login?success";
     }
