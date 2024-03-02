@@ -1,6 +1,7 @@
 package com.fastcampus.mvcboardproject.dto.security;
 
 import com.fastcampus.mvcboardproject.dto.UserAccountDto;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,6 +10,7 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Slf4j
 public record BoardPrincipal(
         String username,
         String password,
@@ -25,22 +27,28 @@ public record BoardPrincipal(
      */
     public static BoardPrincipal of(String username, String password, String email, String nickname, String memo) {
         Set<RoleType> roleTypes = Set.of(RoleType.USER);
+        log.debug("[로그][BoardPrincipal][of] roleTypes : {}", roleTypes);
 
-        return new BoardPrincipal(
-                username,
-                password,
-                roleTypes.stream()
-                        .map(RoleType::getName)   // USER
-                        .map(SimpleGrantedAuthority::new)     // SimpleGrantedAuthority("USER")
-                        .collect(Collectors.toUnmodifiableSet())      // 수정이 불가한 SET으로 변환
-                ,
-                email,
-                nickname,
-                memo
-        );
+        BoardPrincipal userHasRole =  new BoardPrincipal(
+                                                        username,
+                                                        password,
+                                                        roleTypes.stream()
+                                                                .map(RoleType::getName)   // USER
+                                                                .map(SimpleGrantedAuthority::new)     // SimpleGrantedAuthority("USER")
+                                                                .collect(Collectors.toUnmodifiableSet())      // 수정이 불가한 SET으로 변환
+                                                        ,
+                                                        email,
+                                                        nickname,
+                                                        memo
+                                                );
+        log.debug("[로그][BoardPrincipal][of] userHasRole : {}", userHasRole);
+
+        return userHasRole;
     }
 
     public static BoardPrincipal from(UserAccountDto dto) {   //유저 DTO를 넣어주면, 권한 정보를 set타입으로 바꿔서 반환해준다.
+        log.debug("[로그][BoardPrincipal][from] dto : {}", dto);
+
         return BoardPrincipal.of(
                 dto.userId(),
                 dto.userPassword(),
@@ -51,6 +59,7 @@ public record BoardPrincipal(
     }
 
     public UserAccountDto toDto() {
+        log.debug("[로그][BoardPrincipal][toDto] ");
         return UserAccountDto.of(
                 username,
                 password,
@@ -62,14 +71,18 @@ public record BoardPrincipal(
 
 
     @Override public String getUsername() {
+
+        log.debug("[로그][BoardPrincipal][getUsername] username: {}", username);
         return username;
     }
 
     @Override public String getPassword() {
+        log.debug("[로그][BoardPrincipal][getPassword] password : {}", password);
         return password;
     }
 
     @Override public Collection<? extends GrantedAuthority> getAuthorities() {
+        log.debug("[로그][BoardPrincipal][getAuthorities] authorities : {}", authorities);
         return authorities;
     }  //권한에 대한 정보
 
@@ -88,6 +101,5 @@ public record BoardPrincipal(
     @Override public boolean isEnabled() {
         return true;
     }
-
 
 }
