@@ -1,22 +1,12 @@
 package com.fastcampus.mvcboardproject.controller;
 
-//import jakarta.validation.Valid;
-import com.fastcampus.mvcboardproject.domain.UserAccount;
-import com.fastcampus.mvcboardproject.dto.UserAccountDto;
 import com.fastcampus.mvcboardproject.dto.request.UserAccountRequest;
-import com.fastcampus.mvcboardproject.dto.security.BoardPrincipal;
 import com.fastcampus.mvcboardproject.service.UserAccountService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.User;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
-import org.springframework.validation.BindingResult;
+
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 @Slf4j
@@ -35,6 +25,7 @@ public class MainController {
     // [GET] 로그인 페이지
     @GetMapping("/login")
     public String loginForm() {
+    log.debug("[로그][MainController][loginForm] 로그인");
         return "login";
     }
 
@@ -46,13 +37,13 @@ public class MainController {
 
     // [POST] 회원가입 정보 저장
     @PostMapping("/sign-up/save")
-    public String Registration(@ModelAttribute("user") UserAccountDto user
+
+    public String Registration(
+            UserAccountRequest userAccountRequest
     ) {
-        log.info("[MainController] 유저 정보: {}", user);
-        System.out.println("[MainController] 유저 정보: " + user);
+        log.debug("로그 [MainController] userAccountRequest: {}", userAccountRequest.toDto(userAccountRequest));
+        userAccountService.saveUser(userAccountRequest.toDto(userAccountRequest));
+        return "redirect:/";
 
-        userAccountService.saveUser(user);
-        return "redirect:/login?success";
     }
-
 }

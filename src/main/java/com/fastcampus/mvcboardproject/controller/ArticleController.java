@@ -98,6 +98,9 @@ public class ArticleController {
             @AuthenticationPrincipal BoardPrincipal boardPrincipal,
             ArticleRequest articleRequest
     ) {
+        log.debug("로그 boardPrincipal : {}", boardPrincipal);
+        log.debug("로그 articleRequest : {}", articleRequest);
+
         articleService.saveArticle(articleRequest.toDto(boardPrincipal.toDto()));
 
         return "redirect:/articles";

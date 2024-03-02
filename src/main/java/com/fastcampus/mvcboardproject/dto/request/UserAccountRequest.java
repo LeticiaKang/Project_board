@@ -1,30 +1,23 @@
 package com.fastcampus.mvcboardproject.dto.request;
 
-import com.fastcampus.mvcboardproject.dto.ArticleDto;
 import com.fastcampus.mvcboardproject.dto.UserAccountDto;
 
 public record UserAccountRequest (
     String userId,
+    String userPassword,
     String email,
-    String password,
+    String re_pass,  //미사용
     String nickname,
     String memo
 ) {
-    public static UserAccountRequest of(String userId,
-                                        String email,
-                                        String password,
-                                        String nickname,
-                                        String memo) {
-        return new UserAccountRequest(userId, email, password, nickname, memo);
-    }
 
-    public UserAccountDto toDto(UserAccountDto userAccountDto) {
+    public UserAccountDto toDto(UserAccountRequest userAccountRequest) {
         return UserAccountDto.of(
-                userId,
-                email,
-                password,
-                nickname,
-                memo);
+                userAccountRequest.userId(),
+                userAccountRequest.userPassword(),
+                userAccountRequest.email(),
+                userAccountRequest.nickname(),
+                userAccountRequest.memo());
     }
 
 }

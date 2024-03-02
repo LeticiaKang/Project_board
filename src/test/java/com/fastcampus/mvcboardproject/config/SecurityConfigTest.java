@@ -7,7 +7,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -39,4 +38,6 @@ public class SecurityConfigTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/"));  // 로그인 성공 후 리다이렉션되는 URL을 검증합니다.
     }
+
+
 }

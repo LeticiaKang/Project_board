@@ -1,4 +1,5 @@
 package com.fastcampus.mvcboardproject.dto;
+
 import com.fastcampus.mvcboardproject.domain.Article;
 import com.fastcampus.mvcboardproject.domain.ArticleComment;
 import com.fastcampus.mvcboardproject.domain.UserAccount;
