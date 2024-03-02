@@ -4,7 +4,7 @@ import com.fastcampus.mvcboardproject.dto.UserAccountDto;
 import com.fastcampus.mvcboardproject.dto.request.UserAccountRequest;
 import com.fastcampus.mvcboardproject.config.TestSecurityConfig;
 import com.fastcampus.mvcboardproject.service.UserAccountService;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,6 +62,7 @@ class MainControllerTest {
     @DisplayName("[POST] [회원가입 페이지]")
     @Test
     public void whenSignUpFormSubmitted_thenRedirectsToLoginPage() throws Exception {
+
         // Given
         UserAccountRequest userAccountRequest = new UserAccountRequest("testUser",  "password123", "test@example.com","password123", "testNickname", "Just a test");
         willDoNothing().given(userAccountService).saveUser(any(UserAccountDto.class));
@@ -81,6 +82,6 @@ class MainControllerTest {
 
         // Then
         verify(userAccountService).saveUser(userAccountRequest.toDto(userAccountRequest));
-    }
 
+    }
 }

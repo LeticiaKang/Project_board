@@ -7,6 +7,7 @@ import com.fastcampus.mvcboardproject.service.UserAccountService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -37,7 +38,7 @@ public class UserAccountServiceImpl implements UserAccountService {
         if (existingUser.isEmpty()) {
             log.debug("[로그][UserAccountServiceImpl][saveUser] 3. saveUser : {}", saveUser);
             userAccountRepository.saveAndFlush(saveUser);
+
         }
     }
-
 }

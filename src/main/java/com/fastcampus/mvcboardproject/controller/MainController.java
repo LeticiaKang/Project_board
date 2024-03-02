@@ -5,6 +5,7 @@ import com.fastcampus.mvcboardproject.service.UserAccountService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -36,12 +37,13 @@ public class MainController {
 
     // [POST] 회원가입 정보 저장
     @PostMapping("/sign-up/save")
+
     public String Registration(
             UserAccountRequest userAccountRequest
     ) {
         log.debug("로그 [MainController] userAccountRequest: {}", userAccountRequest.toDto(userAccountRequest));
         userAccountService.saveUser(userAccountRequest.toDto(userAccountRequest));
         return "redirect:/";
-    }
 
+    }
 }
