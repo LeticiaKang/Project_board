@@ -1,6 +1,5 @@
 package com.fastcampus.mvcboardproject.repository;
 
-import com.fastcampus.mvcboardproject.config.JpaConfig;
 import com.fastcampus.mvcboardproject.domain.Article;
 import com.fastcampus.mvcboardproject.domain.UserAccount;
 import org.junit.jupiter.api.DisplayName;
