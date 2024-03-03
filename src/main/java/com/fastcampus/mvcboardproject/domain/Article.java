@@ -67,11 +67,11 @@ public class Article extends AuditingFields  {
         if (!(o instanceof Article article)) return false;
         // id가 null이 아니고(아이디가 부여되지않음), PK인 id가 동일하다면, 같음.
         // (영속화하지 않았을 경우, 동등성 검사에서 탈락)
-        return id != null && id.equals(article.id);
+        return this.getId() != null && this.getId().equals(article.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(this.getId());
     }
 }
