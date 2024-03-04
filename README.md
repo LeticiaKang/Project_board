@@ -1,4 +1,4 @@
-## Project_board
+# Project_board
 간단한 게시판 구현
 ## 개발 환경
 * Intellij IDEA Ultimate 2023.2.6
