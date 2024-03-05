@@ -1,11 +1,13 @@
 package com.fastcampus.mvcboardproject.service;
 
 import com.fastcampus.mvcboardproject.domain.Article;
+import com.fastcampus.mvcboardproject.domain.Hashtag;
 import com.fastcampus.mvcboardproject.domain.UserAccount;
 import com.fastcampus.mvcboardproject.domain.constant.SearchType;
 import com.fastcampus.mvcboardproject.dto.ArticleDto;
 import com.fastcampus.mvcboardproject.dto.ArticleWithCommentsDto;
 import com.fastcampus.mvcboardproject.repository.ArticleRepository;
+import com.fastcampus.mvcboardproject.repository.HashtagRepository;
 import com.fastcampus.mvcboardproject.repository.UserAccountRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /*
     엔티티를 노출시키지 않아야 한다.
@@ -29,8 +33,10 @@ import java.util.List;
 @Service                // 서비스 빈으로 등록
 public class ArticleService {
 
-    private final UserAccountRepository userAccountRepository;
+    private final HashtagService hashtagService;
     private final ArticleRepository articleRepository;
+    private final UserAccountRepository userAccountRepository;
+    private final HashtagRepository hashtagRepository;
 
     @Transactional(readOnly = true)  // 단지 읽어오는 거
     public Page<ArticleDto> searchArticles(SearchType searchType, String searchKeyword, Pageable pageable) { // page에 정렬기능
@@ -43,7 +49,7 @@ public class ArticleService {
             // findAll(pageable)는 page를 반환하고, page는 map을 가지고 있는데,page안에 내용물을 형변환 시켜 다시 page로 바꿔준다.
         }
 
-        // enum을 주제로 각 검색어에 따른 쿼리를 만든다. TODO: 필요하다면 나중에 수정하기, TODO: #을 넣을 때랑 아닐때 모두 동작 가능하게 나중에 수정하기
+        // enum을 주제로 각 검색어에 따른 쿼리를 만든다.
         return switch (searchType){
             case TITLE -> articleRepository.findByTitleContaining(searchKeyword, pageable).map(ArticleDto::from);
             case CONTENT -> articleRepository.findByContentContaining(searchKeyword, pageable).map(ArticleDto::from);
@@ -72,7 +78,10 @@ public class ArticleService {
     public void saveArticle(ArticleDto dto) {
         try {
             UserAccount userAccount = userAccountRepository.getReferenceById(dto.userAccountDto().userId());
-            articleRepository.save(dto.toEntity(userAccount));
+            Set<Hashtag> hashtags = renewHashtagsFromContent(dto.content());
+            Article article = dto.toEntity(userAccount);
+            article.addHashtags(hashtags);
+            articleRepository.save(article);
         } catch (EntityNotFoundException e) {
             log.warn("게시글 저장 실패. 게시글을 찾을 수 없습니다 - dto: {}", dto);
         }
@@ -86,6 +95,17 @@ public class ArticleService {
             if (article.getUserAccount().equals(userAccount)) {
                 if (dto.title() != null) { article.setTitle(dto.title()); }   //null 방어로직
                 if (dto.content() != null) { article.setContent(dto.content()); }
+
+                Set<Long> hashtagIds = article.getHashtags().stream()
+                        .map(Hashtag::getId)
+                        .collect(Collectors.toUnmodifiableSet());
+                article.clearHashtags();
+                articleRepository.flush();
+
+                hashtagIds.forEach(hashtagService::deleteHashtagWithoutArticles);
+
+                Set<Hashtag> hashtags = renewHashtagsFromContent(dto.content());
+                article.addHashtags(hashtags);
             }
         } catch (EntityNotFoundException e) {
             log.warn("게시글 업데이트 실패. 게시글을 수정하는데 필요한 정보를 찾을 수 없습니다 - {}", e.getLocalizedMessage());
@@ -94,7 +114,16 @@ public class ArticleService {
 
     public void deleteArticle(long articleId, String userId) {
         try{
+            Article article = articleRepository.getReferenceById(articleId);
+            Set<Long> hashtagIds = article.getHashtags().stream()
+                    .map(Hashtag::getId)
+                    .collect(Collectors.toUnmodifiableSet());
+
             articleRepository.deleteByIdAndUserAccount_UserId(articleId, userId);
+            articleRepository.flush();
+
+            hashtagIds.forEach(hashtagService::deleteHashtagWithoutArticles);
+
         }catch (EntityNotFoundException e){
         }
     }
@@ -104,23 +133,41 @@ public class ArticleService {
     }
 
     // 해시태그 검색(해시태그 있고 검색어가 없으면 비어 있는 페이지를 반환해야 함)
+    // 유니크한 해시태그를 불러옴
     @Transactional(readOnly = true)
-    public Page<ArticleDto> searchArticlesViaHashtag(String hashtag, Pageable pageable) {
-
-        if (hashtag == null || hashtag.isEmpty() || hashtag.isBlank()) {
+    public Page<ArticleDto> searchArticlesViaHashtag(String hashtagName, Pageable pageable) {
+        if (hashtagName == null || hashtagName.isBlank()) {
             return Page.empty(pageable);
         }
 
-        return articleRepository.findByHashtagNames(null,
-                pageable).map(ArticleDto::from);
+        return articleRepository.findByHashtagNames(List.of(hashtagName), pageable)
+                .map(ArticleDto::from);
     }
 
-    // 유니크한 해시태그를 불러옴
-    @Transactional(readOnly = true)
     public List<String> getHashtags() {
-        List<String> uniqueHashtags = articleRepository.findAllDistinctHashtags();
+        return hashtagRepository.findAllHashtagNames(); // TODO: HashtagService 로 이동을 고려해보자.
+    }
 
-        return uniqueHashtags;
+
+    private Set<Hashtag> renewHashtagsFromContent(String content) {
+        /*
+        본문에서 해시태그를 가지고 오고, 가져온 해시태그 중에 같은 이름이 있는지 DB에서 조회한다.
+        해시태그 이름을 불변객체 Set에 넣고,
+        본문에서 가져온 해시태그 이름들을 순회하면서, 해시태그 이름이 DB에 없는 경우 해당 이름으로 해시태그 객체를 생성하여 집합에 추가한다.
+         */
+        Set<String> hashtagNamesInContent = hashtagService.parseHashtagNames(content);
+        Set<Hashtag> hashtags = hashtagService.findHashtagsByNames(hashtagNamesInContent);
+        Set<String> existingHashtagNames = hashtags.stream()
+                .map(Hashtag::getHashtagName)
+                .collect(Collectors.toUnmodifiableSet());
+
+        hashtagNamesInContent.forEach(newHashtagName -> {
+            if (!existingHashtagNames.contains(newHashtagName)) {
+                hashtags.add(Hashtag.of(newHashtagName));
+            }
+        });
+
+        return hashtags;
     }
 
 }
