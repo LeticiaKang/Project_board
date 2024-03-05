@@ -7,6 +7,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -36,14 +37,15 @@ public class Article extends AuditingFields  {
 
     @Column(nullable = false, length = 10000)
     private String content; // 본문 (null 안됨)
-                                                                        // < 해시태그 >는 연관관계로 설정할 것임
+    // < 해시태그 >는 연관관계로 설정할 것임
     @ToString.Exclude                                                   // 순환참조 막음
     @JoinTable(
-        name = "article_hashtag",                                       // 해시태그 테이블과 조인해서 테이블을 하나 만드는데, 그 이름을 article_hashtag로 설정하고
-        joinColumns = @JoinColumn(name = "articleId"),                  // 여기서 조인하는 컬럼은 articleId로 이름을 설정하고,
-        inverseJoinColumns = @JoinColumn(name = "hashtagId")            // 조인하는 테이블에서 가져오는 컬럼은 hashtagId로 이름을 설정한다.
+            name = "article_hashtag",                                       // 해시태그 테이블과 조인해서 테이블을 하나 만드는데, 그 이름을 article_hashtag로 설정하고
+            joinColumns = @JoinColumn(name = "articleId"),                  // 여기서 조인하는 컬럼은 articleId로 이름을 설정하고,
+            inverseJoinColumns = @JoinColumn(name = "hashtagId")            // 조인하는 테이블에서 가져오는 컬럼은 hashtagId로 이름을 설정한다.
     )
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})     // 해시태그를 지우면 게시글을 지우는 것이 아니라, 게시글이 지워지면 해시태그 속의 게글을 삭제하도록 설정한다.
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    // 해시태그를 지우면 게시글을 지우는 것이 아니라, 게시글이 지워지면 해시태그 속의 게글을 삭제하도록 설정한다.
     private Set<Hashtag> hashtags = new LinkedHashSet<>();              // PERSIST: insert, MERGE: update와 같은 변경이 있을 때, 동기화를 할 것임
 
     @ToString.Exclude                                                   // 순환참조를 방지하기 위함
@@ -52,7 +54,8 @@ public class Article extends AuditingFields  {
     private final Set<ArticleComment> articleComments = new LinkedHashSet<>();
 
     // Hibernate구현체를 사용하는 경우 기본 생성자를 가지고 있어야 한다. 평소에는 오픈하지 않으거라 protected로 설정, private는 작동 안됨.
-    protected Article() {}
+    protected Article() {
+    }
 
     private Article(UserAccount userAccount, String title, String content) {
         this.userAccount = userAccount;
@@ -60,8 +63,21 @@ public class Article extends AuditingFields  {
         this.content = content;
     }
 
+
     public static Article of(UserAccount userAccount, String title, String content) {
         return new Article(userAccount, title, content);
+    }
+
+    public void addHashtag(Hashtag hashtag) {
+        this.getHashtags().add(hashtag);
+    }
+
+    public void addHashtags(Collection<Hashtag> hashtags) {
+        this.getHashtags().addAll(hashtags);
+    }
+
+    public void clearHashtags() {
+        this.getHashtags().clear();
     }
 
     // 동등성, 동일성 검사
@@ -79,4 +95,5 @@ public class Article extends AuditingFields  {
     public int hashCode() {
         return Objects.hash(this.getId());
     }
+
 }
