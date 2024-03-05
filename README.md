@@ -37,7 +37,7 @@
 ## git branch 전략
 - git hub 전략 사용 (main, develop, feature) 만 사용
 - develop에서 기능별로 feature를 생성 (예: #44-search)
-- 기능 구현이 완료되면, develop branch에 merge
+  - 기능 구현이 완료되면, develop branch에 merge
 - 큰 단위별로 develop branch에서 main branch로 merge
 
 ## 데모 페이지
