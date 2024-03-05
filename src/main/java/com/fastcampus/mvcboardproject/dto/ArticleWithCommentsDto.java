@@ -13,19 +13,19 @@ public record ArticleWithCommentsDto(
         Set<ArticleCommentDto> articleCommentDtos,
         String title,
         String content,
-        String hashtag,
+        Set<HashtagDto> hashtagDtos,
         LocalDateTime createdAt,
         String createdBy,
         LocalDateTime modifiedAt,
         String modifiedBy
-) {
+){
     // 필드 정보를 입력받아 댓글과 게시글이 같이 있는 DTO(ArticleWithCommentsDto)를 생성
     public static ArticleWithCommentsDto of(Long id,
                                             UserAccountDto userAccountDto,
                                             Set<ArticleCommentDto> articleCommentDtos, //댓글 정보 TODO: 왜 set을 사용했는가?
                                             String title,
                                             String content,
-                                            String hashtag,
+                                            Set<HashtagDto> hashtagDtos,
                                             LocalDateTime createdAt,
                                             String createdBy,
                                             LocalDateTime modifiedAt,
@@ -35,7 +35,7 @@ public record ArticleWithCommentsDto(
                 articleCommentDtos,
                 title,
                 content,
-                hashtag,
+                hashtagDtos,
                 createdAt,
                 createdBy,
                 modifiedAt,
@@ -52,7 +52,9 @@ public record ArticleWithCommentsDto(
                         .collect(Collectors.toCollection(LinkedHashSet::new)),
                 entity.getTitle(),
                 entity.getContent(),
-                entity.getHashtag(),
+                entity.getHashtags().stream()
+                        .map(HashtagDto::from)
+                        .collect(Collectors.toUnmodifiableSet()),
                 entity.getCreatedAt(),
                 entity.getCreatedBy(),
                 entity.getModifiedAt(),
