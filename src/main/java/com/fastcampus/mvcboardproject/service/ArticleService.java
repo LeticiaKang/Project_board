@@ -106,6 +106,7 @@ public class ArticleService {
 
                 Set<Hashtag> hashtags = renewHashtagsFromContent(dto.content());
                 article.addHashtags(hashtags);
+                articleRepository.saveAndFlush(article);
             }
         } catch (EntityNotFoundException e) {
             log.warn("게시글 업데이트 실패. 게시글을 수정하는데 필요한 정보를 찾을 수 없습니다 - {}", e.getLocalizedMessage());

@@ -3,8 +3,11 @@ package com.fastcampus.mvcboardproject.domain;
 import lombok.*;
 
 import jakarta.persistence.*;
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.Objects;
 
+@Slf4j
 @Getter
 @Setter
 @ToString(callSuper = true)
@@ -48,8 +51,8 @@ public class UserAccount extends AuditingFields {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof UserAccount userAccount)) return false;
-        return this.getUserId() != null && this.getUserId().equals(userAccount.userId);
+        if (!(o instanceof UserAccount that)) return false;
+        return this.getUserId() != null  && this.getUserId().equals(that.getUserId());
     }
 
     @Override
