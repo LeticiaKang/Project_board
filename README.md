@@ -43,5 +43,5 @@
   - 기능 구현이 완료되면, develop branch에 merge
   - 큰 단위별로 develop branch에서 main branch로 merge
 
-## 데모 페이지
-(준비중)
+## 데모 영상
+<img width="80%" src="https://github.com/LeticiaKang/Project_board/assets/87592790/9baf3f32-24f5-4ff0-a0c8-515e1661c261)https://github.com/LeticiaKang/Project_board/assets/87592790/9baf3f32-24f5-4ff0-a0c8-515e1661c261">
