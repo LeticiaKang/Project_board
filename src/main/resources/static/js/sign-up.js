@@ -6,8 +6,16 @@ function validateForm() {
     var email = document.forms["signUp-form"]["email"].value;
     var nickname = document.forms["signUp-form"]["nickname"].value;
 
-    var userIdRegex = /^(?=.*[0-9]+)[A-Za-z][A-Za-z0-9_]*$/g;
+    // 아이디가 영문으로 시작하는지 확인하는 정규 표현식
+    var userICheckIng = /^[A-Za-z]/;
+
+    // 영문, 숫자, 밑줄(_)만 사용할 수 있는지 확인하는 정규 표현식
+    var userIdCheckAll = /^[A-Za-z0-9_]+$/;
+
+    // 이메일 형식
     var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    // 비밀번호 형식 : 6자 이상 20자 이하, 숫자와 특수문자 필수 포함
     var passwordPolicyRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&]).{6,20}$/;
 
     // ===================== 아이디 검증 =====================
@@ -21,12 +29,16 @@ function validateForm() {
         return false;
     }
 
-    if (userId.length <= 4 || userId.length >= 10) {
+    if (userId.length < 3 || userId.length > 11) {
         alert("아이디는 4자 이상 10자 이하로 설정해주세요.");
         return false;
     }
-    if (!userIdRegex.test(userId)) {
-        alert("아이디는 영문으로 시작하고 영문, 숫자, 밑줄(_)만 사용할 수 있습니다.");
+    if (!userICheckIng.test(userId)) {
+        alert("아이디는 영문으로 시작해야 합니다.");
+        return false;
+    }
+    if (!userIdCheckAll.test(userId)) {
+        alert("영문, 숫자, 밑줄(_)만 사용할 수 있습니다.")
         return false;
     }
 
