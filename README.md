@@ -39,7 +39,8 @@
 - **main, develop, feature 브런치** 사용
   - **main** : 주요 브런치
   - **develop** : 개발 브런치
-  - **feature** : 기능별 개발 브런치 
+  - **feature** : 기능별 개발 브런치
+      
 - develop에서 기능별로 feature를 생성 (예: #44-search)
   - 기능 구현이 완료되면, develop branch에 merge
   - 큰 단위별로 develop branch에서 main branch로 merge
