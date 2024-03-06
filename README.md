@@ -1,6 +1,6 @@
 # Project_board
 간단한 게시판 구현  
-배포 : [Project_board 사이트]
+배포 : [Project_board 사이트](http://43.202.19.119:18082/)
   
 ## 프로젝트 목적
 - Spring Boot를 이용한 웹 개발 기술을 습득하고, 스스로 공부하고 문제를 해결해 나가기 위함.  
@@ -43,5 +43,5 @@
   - 기능 구현이 완료되면, develop branch에 merge
   - 큰 단위별로 develop branch에서 main branch로 merge
 
-## 데모 페이지
-(준비중)
+## 데모 영상
+<img width="80%" src="https://github.com/LeticiaKang/Project_board/assets/87592790/9baf3f32-24f5-4ff0-a0c8-515e1661c261)https://github.com/LeticiaKang/Project_board/assets/87592790/9baf3f32-24f5-4ff0-a0c8-515e1661c261">
