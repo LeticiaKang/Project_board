@@ -1,6 +1,6 @@
 # Project_board
 간단한 게시판 구현  
-배포 : [Project_board 사이트]
+배포 : [Project_board 사이트](http://43.202.19.119:18082/)
   
 ## 프로젝트 목적
 - Spring Boot를 이용한 웹 개발 기술을 습득하고, 스스로 공부하고 문제를 해결해 나가기 위함.  
